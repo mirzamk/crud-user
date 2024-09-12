@@ -18,7 +18,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	value := r.URL.Query().Get("value")
 	var user []models.User
 
-	query := fmt.Sprintf("select * from user where %s like ?", column)
+	query := fmt.Sprintf(`select * from "user" where %s like ?`, column)
 	result := database.DB.Debug().Raw(query, "%"+value+"%").Find(&user)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
