@@ -12,13 +12,14 @@ import (
 )
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id := params["id"]
+	vars := mux.Vars(r)
+	fmt.Println(vars)
+	column := vars["req"]
+	value := r.URL.Query().Get("value")
+	var user []models.User
 
-
-
-	var user models.User
-	result := database.DB.Debug().Raw("SELECT * FROM user WHERE ID = ?", id).First(&user)
+	query := fmt.Sprintf("select * from user where %s like ?", column)
+	result := database.DB.Debug().Raw(query, "%"+value+"%").Find(&user)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
 			http.Error(w, "User not found", http.StatusNotFound)
@@ -28,12 +29,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jenisKelamin := "Laki-Laki"
-	if user.JenisKelamin == "2" {
-		jenisKelamin = "Perempuan"
-	}
-
-	user.JenisKelamin = jenisKelamin
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
 }
@@ -50,15 +45,6 @@ func GetAllUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for i, v := range users {
-		jenisKelamin := "Laki-Laki"
-		if v.JenisKelamin == "2" {
-			jenisKelamin = "Perempuan"
-		}
-
-		v.JenisKelamin = jenisKelamin
-		users[i] = v
-	}
 	fmt.Println(users)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
@@ -142,13 +128,4 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
-}
-
-func filter[T any](ss []T, test func(T) bool) (ret []T) {
-    for _, s := range ss {
-        if test(s) {
-            ret = append(ret, s)
-        }
-    }
-    return
 }

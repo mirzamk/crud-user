@@ -20,7 +20,7 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/user/{id}", handlers.GetUser).Methods("GET")
+	r.HandleFunc("/user/{req}", handlers.GetUser).Methods("GET")
 	r.HandleFunc("/user", handlers.GetAllUser).Methods("GET")
 	r.HandleFunc("/create", handlers.CreateUser).Methods("POST")
 	r.HandleFunc("/update", handlers.UpdateUser).Methods("POST")

@@ -3,7 +3,7 @@ package models
 type User struct {
 	ID           string `json:"id"`
 	Nama         string `json:"nama"`
-	Umur         string `json:"umur"`
+	Umur         int    `json:"umur"`
 	Alamat       string `json:"alamat"`
 	Agama        string `json:"agama"`
 	JenisKelamin string `json:"jenis_kelamin"`
@@ -12,7 +12,7 @@ type User struct {
 type UpdateUser struct {
 	ID           string `json:"id"`
 	Nama         string `json:"nama"`
-	Umur         string `json:"umur"`
+	Umur         int    `json:"umur"`
 	Alamat       string `json:"alamat"`
 	Agama        string `json:"agama"`
 	JenisKelamin string `json:"jenis_kelamin"`
@@ -20,7 +20,7 @@ type UpdateUser struct {
 
 type InsertUser struct {
 	Nama         string `json:"nama"`
-	Umur         string `json:"umur"`
+	Umur         int    `json:"umur"`
 	Alamat       string `json:"alamat"`
 	Agama        string `json:"agama"`
 	JenisKelamin string `json:"jenis_kelamin"`
