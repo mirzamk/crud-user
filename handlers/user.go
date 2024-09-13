@@ -35,7 +35,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 func GetAllUser(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
-	result := database.DB.Debug().Raw("SELECT * FROM user").Find(&users)
+	result := database.DB.Debug().Raw(`SELECT * FROM "user"`).Find(&users)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
 			http.Error(w, "Users not found", http.StatusNotFound)
@@ -65,7 +65,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		Agama:        u.Agama,
 		JenisKelamin: u.JenisKelamin,
 	}
-	queryInsert := "INSERT INTO user (nama, umur, alamat, agama, jenis_kelamin) VALUES (?, ?, ?, ?, ?)"
+	queryInsert := `INSERT INTO "user" (nama, umur, alamat, agama, jenis_kelamin) VALUES (?, ?, ?, ?, ?)`
 	result := database.DB.Debug().Exec(queryInsert, insertData.Nama, insertData.Umur, insertData.Alamat, insertData.Agama, insertData.JenisKelamin)
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
@@ -98,7 +98,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		Agama:        u.Agama,
 		JenisKelamin: u.JenisKelamin,
 	}
-	result := database.DB.Debug().Exec("UPDATE user SET nama = ?, umur = ?, alamat = ?, agama = ?, jenis_kelamin = ? WHERE ID = ?", update.Nama, update.Umur, update.Alamat, update.Agama, update.JenisKelamin, id)
+	result := database.DB.Debug().Exec(`UPDATE "user" SET nama = ?, umur = ?, alamat = ?, agama = ?, jenis_kelamin = ? WHERE ID = ?`, update.Nama, update.Umur, update.Alamat, update.Agama, update.JenisKelamin, id)
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
 		return
@@ -116,7 +116,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
 
-	result := database.DB.Debug().Exec("DELETE from user where id = ?", id)
+	result := database.DB.Debug().Exec(`DELETE from "user" where id = ?`, id)
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
 		return
@@ -124,7 +124,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	res := &models.Response{
 		ResponseCode:    "00",
-		ResponseMessage: "Berhasil Update Data",
+		ResponseMessage: "Berhasil Delete Data",
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
