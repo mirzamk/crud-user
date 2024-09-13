@@ -1,0 +1,35 @@
+definitions:
+  models.User:
+    properties:
+      agama:
+        type: string
+      alamat:
+        type: string
+      id:
+        type: string
+      jenis_kelamin:
+        type: string
+      nama:
+        type: string
+      umur:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Rest API CRUD User
+  title: Crud User
+  version: "1"
+paths:
+  /api/v1/user:
+    get:
+      description: returs list of all users from the database
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: return list of all
+      tags:
+      - Users
+swagger: "2.0"

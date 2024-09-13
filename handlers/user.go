@@ -33,6 +33,26 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+func GetUserId(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["id"]
+
+	var user models.User
+	query := `select * from "user" where id = ?`
+	result := database.DB.Debug().Raw(query, id).Find(&user)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			http.Error(w, "User not found", http.StatusNotFound)
+		} else {
+			http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
+}
+
 func GetAllUser(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
 	result := database.DB.Debug().Raw(`SELECT * FROM "user"`).Find(&users)
@@ -44,8 +64,6 @@ func GetAllUser(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
-	fmt.Println(users)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
 }
@@ -98,16 +116,21 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		Agama:        u.Agama,
 		JenisKelamin: u.JenisKelamin,
 	}
-	result := database.DB.Debug().Exec(`UPDATE "user" SET nama = ?, umur = ?, alamat = ?, agama = ?, jenis_kelamin = ? WHERE ID = ?`, update.Nama, update.Umur, update.Alamat, update.Agama, update.JenisKelamin, id)
-	if result.Error != nil {
-		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	res := &models.Response{
 		ResponseCode:    "00",
 		ResponseMessage: "Berhasil Update Data",
 	}
+	result := database.DB.Debug().Exec(`UPDATE "user" SET nama = ?, umur = ?, alamat = ?, agama = ?, jenis_kelamin = ? WHERE ID = ?`, update.Nama, update.Umur, update.Alamat, update.Agama, update.JenisKelamin, id)
+	if result.RowsAffected == 0 {
+		res = &models.Response{
+			ResponseCode:    "99",
+			ResponseMessage: "Gagal update data",
+		}
+	} else if result.Error != nil {
+		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
 }

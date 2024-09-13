@@ -1,0 +1,54 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Rest API CRUD User",
+        "title": "Crud User",
+        "contact": {},
+        "version": "1"
+    },
+    "host": "localhost:8080",
+    "paths": {
+        "/api/v1/user": {
+            "get": {
+                "description": "returs list of all users from the database",
+                "tags": [
+                    "Users"
+                ],
+                "summary": "return list of all",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "agama": {
+                    "type": "string"
+                },
+                "alamat": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "jenis_kelamin": {
+                    "type": "string"
+                },
+                "nama": {
+                    "type": "string"
+                },
+                "umur": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
